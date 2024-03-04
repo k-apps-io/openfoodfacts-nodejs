@@ -2,12 +2,14 @@
   "name": "@k-apps-io/openfoodfacts-nodejs",
   "version": "2.0.0",
   "description": "Open Food Facts API NodeJS Wrapper",
+  "files": [
+    "dist/**/**.*"
+  ],
   "exports": [
     "./dist/main.js"
   ],
   "types": "dist/main.d.ts",
   "scripts": {
-    "prepack": "yarn run build",
     "build": "tsc",
     "build:docs": "typedoc src/main.ts",
     "lint": "standard",
@@ -22,7 +24,9 @@
     "fix": "standard --fix",
     "test": "mocha test/**/*.ts",
     "contributors:add": "all-contributors add",
-    "contributors:generate": "all-contributors generate"
+    "contributors:generate": "all-contributors generate",
+    "beta": "npm run build && git add . && git commit -m \"Committing changes before beta deploy\" && npm version prerelease --preid=beta && npm publish --tag beta",
+    "deploy": "npm run build && npm publish --access public"
   },
   "standard": {
     "env": [
@@ -69,6 +73,5 @@
     "prettier": "^3.1.1",
     "typedoc": "^0.25.4",
     "typescript": "^5.3.3"
-  },
-  "packageManager": "yarn@4.0.2"
+  }
 }
