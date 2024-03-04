@@ -11,7 +11,7 @@ export interface paths {
      * @description A product can be fetched via its unique barcode.
      * It returns all the details of that product response.
      */
-    get: operations["get-product-by-barcode"];
+    get: operations[ "get-product-by-barcode" ];
   };
   "/api/v2/product/{barcode}?fields=knowledge_panels": {
     /**
@@ -23,7 +23,7 @@ export interface paths {
      * This is used by open food facts website,
      * and by the official mobile application
      */
-    get: operations["get-product-by-barcode-knowledge-panels"];
+    get: operations[ "get-product-by-barcode-knowledge-panels" ];
   };
   "/cgi/product_image_upload.pl": {
     /**
@@ -32,14 +32,14 @@ export interface paths {
      * The first photo uploaded for a product is
      * auto-selected as the product’s “front” photo.'
      */
-    post: operations["get-cgi-product_image_upload.pl"];
+    post: operations[ "get-cgi-product_image_upload.pl" ];
   };
   "/cgi/ingredients.pl": {
     /**
      * Performing OCR on a Product
      * @description Open Food Facts uses optical character recognition (OCR) to retrieve nutritional data and other information from the product labels.
      */
-    get: operations["get-cgi-ingredients.pl"];
+    get: operations[ "get-cgi-ingredients.pl" ];
   };
   "/cgi/product_image_crop.pl": {
     /**
@@ -48,20 +48,20 @@ export interface paths {
      * the OFF API allows you to make api calls to automate this process.
      * You can rotate existing photos by setting the angle to 90º, 180º, or 270º clockwise.
      */
-    get: operations["get-cgi-product_image_crop.pl"];
+    get: operations[ "get-cgi-product_image_crop.pl" ];
     /**
      * Crop A Photo
      * @description Cropping is only relevant for editing existing products.
      * You cannot crop an image the first time you upload it to the system.
      */
-    post: operations["post-cgi-product_image_crop.pl"];
+    post: operations[ "post-cgi-product_image_crop.pl" ];
   };
   "/cgi/product_image_unselect.pl": {
     /** Unselect A Photo */
     post: {
       requestBody?: {
         content: {
-          "multipart/form-data": external["requestBodies/unselect_a_photo.yaml"];
+          "multipart/form-data": external[ "requestBodies/unselect_a_photo.yaml" ];
         };
       };
       responses: {
@@ -97,7 +97,7 @@ export interface paths {
      * However if it doesn''t you will be creating a new product with that unique barcode,
      * and adding properties to the product.
      */
-    post: operations["post-cgi-product_jqm2.pl"];
+    post: operations[ "post-cgi-product_jqm2.pl" ];
   };
   "/api/v2/search": {
     /**
@@ -107,7 +107,7 @@ export interface paths {
      * If the search query parameter has 2 possible values, they are seperated by a comma(,).
      * When filtering via a parameter that has different language codes like `fr`, `de` or `en`, specify the language code in the parameter name e.g `categories_tags_en`
      */
-    get: operations["get-search"];
+    get: operations[ "get-search" ];
   };
   "/cgi/suggest.pl": {
     /**
@@ -117,7 +117,14 @@ export interface paths {
      * This is useful if you have a search in your application,
      * for a specific product field.
      */
-    get: operations["get-cgi-suggest.pl"];
+    get: operations[ "get-cgi-suggest.pl" ];
+  };
+  "/cgi/nutrients.pl": {
+    /**
+     * Get a nested list of nutrients that can be displayed in the nutrition facts table for a specific country and language
+     * @description Used to display the nutrition facts table of a product, or to display a form to input those nutrition facts.
+     */
+    get: operations[ "get-cgi-nutrients.pl" ];
   };
 }
 
@@ -125,21 +132,25 @@ export type webhooks = Record<string, never>;
 
 export interface components {
   schemas: {
-    "Product-Base": external["schemas/product_base.yaml"];
-    "Product-Misc": external["schemas/product_misc.yaml"];
-    "Product-Tags": external["schemas/product_tags.yaml"];
-    "Product-Nutrition": external["schemas/product_nutrition.yaml"];
-    "Product-Ingredients": external["schemas/product_ingredients.yaml"];
-    "Product-Images": external["schemas/product_images.yaml"];
-    "Product-Eco-Score": external["schemas/product_ecoscore.yaml"];
-    "Product-Metadata": external["schemas/product_meta.yaml"];
-    "Product-Data-Quality": external["schemas/product_quality.yaml"];
-    "Product-Knowledge-Panels": external["schemas/product_knowledge_panels.yaml"];
-    Product: external["schemas/product.yaml"];
+    "Product-Base": external[ "schemas/product_base.yaml" ];
+    "Product-Misc": external[ "schemas/product_misc.yaml" ];
+    "Product-Tags": external[ "schemas/product_tags.yaml" ];
+    "Product-Nutrition": external[ "schemas/product_nutrition.yaml" ];
+    "Product-Ingredients": external[ "schemas/product_ingredients.yaml" ];
+    "Product-Images": external[ "schemas/product_images.yaml" ];
+    "Product-Eco-Score": external[ "schemas/product_ecoscore.yaml" ];
+    "Product-Metadata": external[ "schemas/product_meta.yaml" ];
+    "Product-Data-Quality": external[ "schemas/product_quality.yaml" ];
+    "Product-Knowledge-Panels": external[ "schemas/product_knowledge_panels.yaml" ];
+    Product: external[ "schemas/product.yaml" ];
   };
   responses: never;
   parameters: {
     id: string;
+    /** @description 2 letter code of the country of the user. Used for localizing some fields in returned values (e.g. knowledge panels). If not passed, the country may be inferred by the IP address of the request. */
+    cc?: string;
+    /** @description 2 letter code of the language of the user. Used for localizing some fields in returned values (e.g. knowledge panels). If not passed, the language may be inferred by the Accept-Language header of the request. */
+    lc?: string;
     /** @description Barcode of the product */
     code: string;
     process_image: string;
@@ -172,7 +183,7 @@ export interface components {
 export type $defs = Record<string, never>;
 
 export interface external {
-  "examples/get_product_by_barcode_spread.yaml": unknown
+  "examples/get_product_by_barcode_spread.yaml": unknown;
   "requestBodies/add_or_edit_a_product.yaml": {
     /**
      * @description The barcode of the product to be added or edited
@@ -189,6 +200,11 @@ export interface external {
      * @example mypassword
      */
     password: string;
+    /**
+     * @description A comment for the change. It will be shown in product changes history.
+     * @example new packaging from super-app
+     */
+    comment?: string;
     /**
      * @description The brands of the product (comma separated list of values).
      * @example Häagen-Dazs,General-mills
@@ -328,17 +344,17 @@ export interface external {
   };
   "responses/add_photo_to_existing_product.yaml": {
     files?: {
-        /** @example /product/3017620422003/nutella-ferrero */
-        url?: string;
-        /** @example */
-        filename?: string;
-        /** @example Nutella - Ferrero - 400g */
-        name?: string;
-        /** @example /images/products/301/762/042/2003/123.100.jpg */
-        thumbnailUrl?: string;
-        /** @example 3017620422003 */
-        code?: string;
-      }[];
+      /** @example /product/3017620422003/nutella-ferrero */
+      url?: string;
+      /** @example */
+      filename?: string;
+      /** @example Nutella - Ferrero - 400g */
+      name?: string;
+      /** @example /images/products/301/762/042/2003/123.100.jpg */
+      thumbnailUrl?: string;
+      /** @example 3017620422003 */
+      code?: string;
+    }[];
     image?: {
       /** @example 123.100.jpg */
       thumb_url?: string;
@@ -356,6 +372,7 @@ export interface external {
     /** @example 3017620422003 */
     code?: string;
   };
+  "responses/get_nutrients.yaml": external[ "schemas/nutrients.yaml" ];
   "responses/get_product_by_barcode_base.yaml": {
     /**
      * @description Barcode of the product
@@ -367,8 +384,8 @@ export interface external {
     status?: number;
     status_verbose?: string;
   };
-  "responses/get_product_by_barcode.yaml": external["responses/get_product_by_barcode_base.yaml"] & {
-    product?: external["schemas/product.yaml"];
+  "responses/get_product_by_barcode.yaml": external[ "responses/get_product_by_barcode_base.yaml" ] & {
+    product?: external[ "schemas/product.yaml" ];
   };
   "responses/ocr_on_product.yaml": {
     /** @example 1 */
@@ -410,7 +427,7 @@ export interface external {
      */
     page_size?: number;
     /** @description The products matching the query corresponding to current page */
-    products?: external["schemas/product.yaml"][];
+    products?: external[ "schemas/product.yaml" ][];
     /** @example 0 */
     skip?: number;
   };
@@ -469,10 +486,10 @@ export interface external {
      * while the full images have `full` as the key.
      */
     sizes?: {
-      100?: external["schemas/image_size.yaml"];
-      200?: external["schemas/image_size.yaml"];
-      400?: external["schemas/image_size.yaml"];
-      full?: external["schemas/image_size.yaml"];
+      100?: external[ "schemas/image_size.yaml" ];
+      200?: external[ "schemas/image_size.yaml" ];
+      400?: external[ "schemas/image_size.yaml" ];
+      full?: external[ "schemas/image_size.yaml" ];
     };
     /**
      * @description Photo on white background : Try to remove the background.
@@ -515,7 +532,7 @@ export interface external {
        * @description properties of fullsize image
        * **TODO** explain how to compute name
        */
-      full?: external["schemas/image_size.yaml"];
+      full?: external[ "schemas/image_size.yaml" ];
     };
     /**
      * @description The time the image was uploaded (as unix timestamp).
@@ -531,17 +548,17 @@ export interface external {
     uploader?: string;
   };
   "schemas/ingredient.yaml": {
-      id?: string;
-      /** @description Sub ingredients composing this ingredients. */
-      ingredients?: external["schemas/ingredient.yaml"];
-      percent?: number;
-      percent_estimate?: number;
-      percent_max?: number;
-      percent_min?: number;
-      text?: string;
-      vegan?: string;
-      vegetarian?: string;
-    }[];
+    id?: string;
+    /** @description Sub ingredients composing this ingredients. */
+    ingredients?: external[ "schemas/ingredient.yaml" ];
+    percent?: number;
+    percent_estimate?: number;
+    percent_max?: number;
+    percent_min?: number;
+    text?: string;
+    vegan?: string;
+    vegetarian?: string;
+  }[];
   "schemas/knowledge_panels/elements/element.yaml": {
     /**
      * @description The type of the included element object.
@@ -556,12 +573,12 @@ export interface external {
      * @enum {unknown}
      */
     type: "text" | "image" | "action" | "panel" | "panel_group" | "table";
-    text_element?: external["schemas/knowledge_panels/elements/text_element.yaml"];
-    image_element?: external["schemas/knowledge_panels/elements/image_element.yaml"];
+    text_element?: external[ "schemas/knowledge_panels/elements/text_element.yaml" ];
+    image_element?: external[ "schemas/knowledge_panels/elements/image_element.yaml" ];
     action_element?: string;
-    panel_element?: external["schemas/knowledge_panels/elements/panel_element.yaml"];
-    panel_group_element?: external["schemas/knowledge_panels/elements/panel_group_element.yaml"];
-    table_element?: external["schemas/knowledge_panels/elements/table_element.yaml"];
+    panel_element?: external[ "schemas/knowledge_panels/elements/panel_element.yaml" ];
+    panel_group_element?: external[ "schemas/knowledge_panels/elements/panel_group_element.yaml" ];
+    table_element?: external[ "schemas/knowledge_panels/elements/table_element.yaml" ];
   };
   "schemas/knowledge_panels/elements/image_element.yaml": {
     /** @description full URL of the image */
@@ -599,13 +616,13 @@ export interface external {
     title?: string;
     rows?: string;
     columns?: {
-        type?: string;
-        text?: string;
-        text_for_small_screens?: string;
-        style?: string;
-        column_group_id?: string;
-        shown_by_default?: boolean;
-      }[];
+      type?: string;
+      text?: string;
+      text_for_small_screens?: string;
+      style?: string;
+      column_group_id?: string;
+      shown_by_default?: boolean;
+    }[];
   };
   "schemas/knowledge_panels/elements/text_element.yaml": {
     /**
@@ -671,9 +688,9 @@ export interface external {
     expanded?: boolean;
     /** @description If set to "large", the content of the panel should be expanded on large screens, but it should still be possible to unexpand it. */
     expand_for?: string;
-    title_element?: external["schemas/knowledge_panels/elements/title_element.yaml"];
+    title_element?: external[ "schemas/knowledge_panels/elements/title_element.yaml" ];
     /** @description An ordered list of elements to display in the content of the panel. */
-    elements?: external["schemas/knowledge_panels/elements/element.yaml"][];
+    elements?: external[ "schemas/knowledge_panels/elements/element.yaml" ][];
     /**
      * @description a message level, as levels we use in log.
      * It might help theming the panel visualy
@@ -692,8 +709,23 @@ export interface external {
     topics?: string[];
   };
   "schemas/knowledge_panels/panels.yaml": {
-    readonly additionalProperties?: external["schemas/knowledge_panels/panel.yaml"];
+    readonly additionalProperties?: external[ "schemas/knowledge_panels/panel.yaml" ];
   };
+  "schemas/nutrient_unit.yaml": "g" | "mg" | "μg" | "cl" | "ml" | "dv" | "% vol" | "%";
+  "schemas/nutrients.yaml": {
+    /** @description id of the nutrient */
+    id?: string;
+    /** @description Name of the nutrient in the requested language */
+    name?: string;
+    /** @description Indicates if the nutrient is always shown on the nutrition facts table */
+    important?: boolean;
+    /** @description Indicates if the nutrient should be shown in the nutrition facts edit form */
+    display_in_edit_form?: boolean;
+    /** @description Default unit of the nutrient */
+    unit?: external[ "schemas/nutrient_unit.yaml" ];
+    /** @description Sub-nutrients (e.g. saturated-fat is a sub-nutrient of fat). */
+    nutrients?: external[ "schemas/nutrients.yaml" ];
+  }[];
   "schemas/packagings/material.yaml": {
     /** @description Canonical id of the entry in the taxonomy. If the value cannot be mapped to a taxonomy entry, the value will be the name of the entry in its original language prefixed by the language 2 letter code and a colon. */
     id?: string;
@@ -703,9 +735,9 @@ export interface external {
   "schemas/packagings/packaging_component.yaml": {
     /** @description umber of units of this packaging component contained in the product (e.g. 6 for a pack of 6 bottles) */
     number_of_units?: number;
-    shape?: external["schemas/packagings/shape.yaml"];
-    material?: external["schemas/packagings/material.yaml"];
-    recycling?: external["schemas/packagings/recycling.yaml"];
+    shape?: external[ "schemas/packagings/shape.yaml" ];
+    material?: external[ "schemas/packagings/material.yaml" ];
+    recycling?: external[ "schemas/packagings/recycling.yaml" ];
     /** @description Quantity (weight or volume) of food product contained in the packaging component. (e.g. 75cl for a wine bottle) */
     quantity_per_unit?: string;
     /** @description Value parsed from the quantity field. */
@@ -724,7 +756,7 @@ export interface external {
     weight_source_id?: string;
   };
   "schemas/packagings/packagings_complete.yaml": number;
-  "schemas/packagings/packagings.yaml": readonly external["schemas/packagings/packaging_component.yaml"][];
+  "schemas/packagings/packagings.yaml": readonly external[ "schemas/packagings/packaging_component.yaml" ][];
   "schemas/packagings/recycling.yaml": {
     /** @description Canonical id of the entry in the taxonomy. If the value cannot be mapped to a taxonomy entry, the value will be the name of the entry in its original language prefixed by the language 2 letter code and a colon. */
     id?: string;
@@ -812,9 +844,9 @@ export interface external {
       adjustments?: {
         origins_of_ingredients?: {
           aggregated_origins?: {
-              origin?: string;
-              percent?: number;
-            }[];
+            origin?: string;
+            percent?: number;
+          }[];
           epi_score?: number;
           epi_value?: number;
           origins_from_origins_field?: string[];
@@ -826,11 +858,11 @@ export interface external {
         packaging?: {
           non_recyclable_and_non_biodegradable_materials?: number;
           packagings?: {
-              ecoscore_material_score?: number;
-              ecoscore_shape_ratio?: number;
-              material?: string;
-              shape?: string;
-            }[];
+            ecoscore_material_score?: number;
+            ecoscore_shape_ratio?: number;
+            material?: string;
+            shape?: string;
+          }[];
           score?: number;
           value?: number;
           warning?: string;
@@ -846,7 +878,7 @@ export interface external {
           value?: number;
         };
       };
-      agribalyse?: external["schemas/agribalyse.yaml"];
+      agribalyse?: external[ "schemas/agribalyse.yaml" ];
       grade?: string;
       grades?: Record<string, never>;
       missing?: {
@@ -858,7 +890,7 @@ export interface external {
       previous_data?: {
         grade?: string;
         score?: number;
-        agribalyse?: external["schemas/agribalyse.yaml"];
+        agribalyse?: external[ "schemas/agribalyse.yaml" ];
       };
       score?: number;
       scores?: Record<string, never>;
@@ -884,7 +916,7 @@ export interface external {
     };
     categories_properties_tags?: string[];
     category_properties?: {
-      [key: string]: string;
+      [ key: string ]: string;
     };
     ciqual_food_name_tags?: string[];
     /**
@@ -918,8 +950,7 @@ export interface external {
       /** @description Markers of level 3 */
       3?: string[][];
       /** @description Markers of level 4 */
-      // @ts-expect-error TODO: fix this
-      4?: external["schemas/product_extended.yaml"]["nova_groups_markers"]["3"]["items"][];
+      4?: string[][]; // external["schemas/product_extended.yaml"]["nova_groups_markers"]["3"]["items"][];
     };
     nucleotides_tags?: Record<string, never>[];
     origin?: string;
@@ -953,9 +984,9 @@ export interface external {
     /** @description This contains properties for all images contained on the product. */
     images?: {
       /** @description This represents an image uploaded for this product. */
-      1?: external["schemas/image.yaml"];
+      1?: external[ "schemas/image.yaml" ];
       /** @description This represents an image (or part of it) selected for a specific role on this product. */
-      front?: external["schemas/image_role.yaml"];
+      front?: external[ "schemas/image_role.yaml" ];
     };
     last_image_dates_tags?: string[];
     last_image_t?: number;
@@ -963,11 +994,11 @@ export interface external {
       /** @description URLs of thumbnails image of image of type `image_type` */
       front?: {
         /** @description Thumbnail urls of product image (front) adapted to display on product page */
-        display?: external["schemas/image_urls.yaml"];
+        display?: external[ "schemas/image_urls.yaml" ];
         /** @description Thumbnail urls of product image (front) adapted to display on product list page */
-        small?: external["schemas/image_urls.yaml"];
+        small?: external[ "schemas/image_urls.yaml" ];
         /** @description Thumbnail urls of product image (front) in smallest format */
-        thumb?: external["schemas/image_urls.yaml"];
+        thumb?: external[ "schemas/image_urls.yaml" ];
       };
     };
   };
@@ -979,7 +1010,7 @@ export interface external {
     allergens_lc?: string;
     allergens_hierarchy?: string[];
     allergens_tags?: string[];
-    ingredients?: external["schemas/ingredient.yaml"];
+    ingredients?: external[ "schemas/ingredient.yaml" ];
     ingredients_analysis?: {
       "en:palm-oil"?: string[];
       "en:vegan-status-unknown"?: string[];
@@ -994,6 +1025,10 @@ export interface external {
     ingredients_n_tags?: string[];
     ingredients_original_tags?: string[];
     ingredients_percent_analysis?: number;
+    /** @description Number of sweeteners additives in the ingredients. Undefined if ingredients are not specified. */
+    ingredients_sweeteners_n?: number;
+    /** @description Number of non-nutritive sweeteners additives (as specified in the Nutri-Score formula) in the ingredients. Undefined if ingredients are not specified. */
+    ingredients_non_nutritive_sweeteners_n?: number;
     ingredients_tags?: string[];
     /**
      * @description Language that was used to parse the ingredient list. If `ingredients_text` is available
@@ -1043,7 +1078,7 @@ export interface external {
     unknown_ingredients_n?: number;
   };
   "schemas/product_knowledge_panels.yaml": {
-    knowledge_panels?: external["schemas/knowledge_panels/panels.yaml"];
+    knowledge_panels?: external[ "schemas/knowledge_panels/panels.yaml" ];
   };
   "schemas/product_meta.yaml": {
     /**
@@ -1082,17 +1117,17 @@ export interface external {
     photographers_tags?: string[];
     /** @description revision number of this product version (each edit adds a revision) */
     rev?: number;
-    sources?: ({
-        fields?: string[];
-        id?: string;
-        images?: Record<string, never>[];
-        import_t?: number;
-        manufacturer?: number | string;
-        name?: string;
-        source_licence?: string;
-        source_licence_url?: string;
-        url?: null | string;
-      })[];
+    sources?: ( {
+      fields?: string[];
+      id?: string;
+      images?: Record<string, never>[];
+      import_t?: number;
+      manufacturer?: number | string;
+      name?: string;
+      source_licence?: string;
+      source_licence_url?: string;
+      url?: null | string;
+    } )[];
     sources_fields?: {
       "org-gs1"?: {
         gln?: string;
@@ -1143,8 +1178,8 @@ export interface external {
      * @example packaging_text_en
      */
     packaging_text?: string;
-    packagings?: external["schemas/packagings/packagings.yaml"];
-    packagings_complete?: external["schemas/packagings/packagings_complete.yaml"];
+    packagings?: external[ "schemas/packagings/packagings.yaml" ];
+    packagings_complete?: external[ "schemas/packagings/packagings_complete.yaml" ];
     /** @description Category of food according to [French Nutrition and Health Program](https://fr.wikipedia.org/wiki/Programme_national_nutrition_sant%C3%A9) */
     pnns_groups_1?: string;
     pnns_groups_1_tags?: string[];
@@ -1301,6 +1336,8 @@ export interface external {
     /**
      * @description Detail of data the Nutri-Score was computed upon.
      *
+     * **Note**: this might not be stable, don't rely too much on this, or, at least, tell us !
+     *
      * **TODO** document each property
      */
     nutriscore_data?: {
@@ -1442,7 +1479,7 @@ export interface external {
     nova_groups_tags?: string[];
     nutrient_levels_tags?: string[];
   };
-  "schemas/product.yaml": external["schemas/product_base.yaml"] & external["schemas/product_misc.yaml"] & external["schemas/product_tags.yaml"] & external["schemas/product_images.yaml"] & external["schemas/product_ecoscore.yaml"] & external["schemas/product_ingredients.yaml"] & external["schemas/product_nutrition.yaml"] & external["schemas/product_quality.yaml"] & external["schemas/product_extended.yaml"] & external["schemas/product_meta.yaml"] & external["schemas/product_knowledge_panels.yaml"];
+  "schemas/product.yaml": external[ "schemas/product_base.yaml" ] & external[ "schemas/product_misc.yaml" ] & external[ "schemas/product_tags.yaml" ] & external[ "schemas/product_images.yaml" ] & external[ "schemas/product_ecoscore.yaml" ] & external[ "schemas/product_ingredients.yaml" ] & external[ "schemas/product_nutrition.yaml" ] & external[ "schemas/product_quality.yaml" ] & external[ "schemas/product_extended.yaml" ] & external[ "schemas/product_meta.yaml" ] & external[ "schemas/product_knowledge_panels.yaml" ];
   "schemas/tags_parameters.yaml": {
     /**
      * @description The additives_tags in english of product(s) you are searching for.
@@ -1509,7 +1546,7 @@ export interface external {
     traces_tags?: unknown;
     /** @description You can add a language code to a specific tag to query it in a specific language */
     tag_name_with_language_code?: unknown;
-  }
+  };
 }
 
 export interface operations {
@@ -1530,7 +1567,7 @@ export interface operations {
       /** @description OK */
       200: {
         content: {
-          "application/json": external["responses/get_product_by_barcode.yaml"];
+          "application/json": external[ "responses/get_product_by_barcode.yaml" ];
         };
       };
     };
@@ -1555,8 +1592,8 @@ export interface operations {
       /** @description OK */
       200: {
         content: {
-          "application/json": external["responses/get_product_by_barcode_base.yaml"] & {
-            product?: external["schemas/product_knowledge_panels.yaml"];
+          "application/json": external[ "responses/get_product_by_barcode_base.yaml" ] & {
+            product?: external[ "schemas/product_knowledge_panels.yaml" ];
           };
         };
       };
@@ -1571,14 +1608,14 @@ export interface operations {
   "get-cgi-product_image_upload.pl": {
     requestBody?: {
       content: {
-        "multipart/form-data": external["requestBodies/add_photo_to_existing_product.yaml"];
+        "multipart/form-data": external[ "requestBodies/add_photo_to_existing_product.yaml" ];
       };
     };
     responses: {
       /** @description OK */
       200: {
         content: {
-          "application/json": external["responses/add_photo_to_existing_product.yaml"];
+          "application/json": external[ "responses/add_photo_to_existing_product.yaml" ];
         };
       };
     };
@@ -1590,17 +1627,17 @@ export interface operations {
   "get-cgi-ingredients.pl": {
     parameters: {
       query: {
-        id: components["parameters"]["id"];
-        code: components["parameters"]["code"];
-        process_image: components["parameters"]["process_image"];
-        ocr_engine: components["parameters"]["ocr_engine"];
+        id: components[ "parameters" ][ "id" ];
+        code: components[ "parameters" ][ "code" ];
+        process_image: components[ "parameters" ][ "process_image" ];
+        ocr_engine: components[ "parameters" ][ "ocr_engine" ];
       };
     };
     responses: {
       /** @description OK */
       200: {
         content: {
-          "application/json": external["responses/ocr_on_product.yaml"];
+          "application/json": external[ "responses/ocr_on_product.yaml" ];
         };
       };
     };
@@ -1614,17 +1651,17 @@ export interface operations {
   "get-cgi-product_image_crop.pl": {
     parameters: {
       query: {
-        code: components["parameters"]["code"];
-        id: components["parameters"]["id"];
-        imgid: components["parameters"]["imgid"];
-        angle: components["parameters"]["angle"];
+        code: components[ "parameters" ][ "code" ];
+        id: components[ "parameters" ][ "id" ];
+        imgid: components[ "parameters" ][ "imgid" ];
+        angle: components[ "parameters" ][ "angle" ];
       };
     };
     responses: {
       /** @description OK */
       200: {
         content: {
-          "application/json": external["responses/rotate_a_photo.yaml"];
+          "application/json": external[ "responses/rotate_a_photo.yaml" ];
         };
       };
     };
@@ -1637,7 +1674,7 @@ export interface operations {
   "post-cgi-product_image_crop.pl": {
     requestBody: {
       content: {
-        "multipart/form-data": external["requestBodies/crop_a_photo.yaml"];
+        "multipart/form-data": external[ "requestBodies/crop_a_photo.yaml" ];
       };
     };
     responses: {
@@ -1658,14 +1695,14 @@ export interface operations {
   "post-cgi-product_jqm2.pl": {
     requestBody?: {
       content: {
-        "multipart/form-data": external["requestBodies/add_or_edit_a_product.yaml"];
+        "multipart/form-data": external[ "requestBodies/add_or_edit_a_product.yaml" ];
       };
     };
     responses: {
       /** @description OK */
       200: {
         content: {
-          "application/json": external["responses/add_or_edit_a_product.yaml"];
+          "application/json": external[ "responses/add_or_edit_a_product.yaml" ];
         };
       };
     };
@@ -1680,15 +1717,15 @@ export interface operations {
   "get-search": {
     parameters: {
       query?: {
-        fields?: components["parameters"]["fields"];
-        sort_by?: components["parameters"]["sort_by"];
+        fields?: components[ "parameters" ][ "fields" ];
+        sort_by?: components[ "parameters" ][ "sort_by" ];
       };
     };
     responses: {
       /** @description OK */
       200: {
         content: {
-          "application/json": external["responses/search_for_products.yaml"];
+          "application/json": external[ "responses/search_for_products.yaml" ];
         };
       };
     };
@@ -1703,8 +1740,8 @@ export interface operations {
   "get-cgi-suggest.pl": {
     parameters: {
       query?: {
-        tagtype?: components["parameters"]["tagtype"];
-        term?: components["parameters"]["term"];
+        tagtype?: components[ "parameters" ][ "tagtype" ];
+        term?: components[ "parameters" ][ "term" ];
       };
     };
     responses: {
@@ -1712,6 +1749,26 @@ export interface operations {
       200: {
         content: {
           "application/json": unknown[];
+        };
+      };
+    };
+  };
+  /**
+   * Get a nested list of nutrients that can be displayed in the nutrition facts table for a specific country and language
+   * @description Used to display the nutrition facts table of a product, or to display a form to input those nutrition facts.
+   */
+  "get-cgi-nutrients.pl": {
+    parameters: {
+      query?: {
+        cc?: components[ "parameters" ][ "cc" ];
+        lc?: components[ "parameters" ][ "lc" ];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "application/json": external[ "responses/get_nutrients.yaml" ];
         };
       };
     };

@@ -1,10 +1,10 @@
 import createClient from "openapi-fetch";
 
-import { paths, components } from "./schemas/folksonomy";
-import { formBody as formBodySerializer } from "./formbody";
 import { ApiError } from "./error";
+import { formBody as formBodySerializer } from "./formbody";
+import { components, paths } from "./schemas/folksonomy";
 
-export type FolksonomyTag = components["schemas"]["ProductTag"];
+export type FolksonomyTag = components[ "schemas" ][ "ProductTag" ];
 export type FolksonomyKey = {
   k: string;
   count: number;
@@ -16,18 +16,18 @@ export class Folksonomy {
   private readonly baseUrl: string;
   readonly raw: ReturnType<typeof createClient<paths>>;
 
-  constructor(fetch: typeof global.fetch, authToken: string) {
+  constructor( fetch: typeof global.fetch, authToken: string ) {
     this.baseUrl = "https://api.folksonomy.openfoodfacts.org";
 
     this.fetch = fetch;
-    this.raw = createClient({
+    this.raw = createClient( {
       baseUrl: this.baseUrl,
       fetch,
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${authToken}`,
+        Authorization: `Bearer ${ authToken }`,
       },
-    });
+    } );
   }
 
   /**
@@ -36,22 +36,22 @@ export class Folksonomy {
    * The keys list can be restricted to private tags from some owner.
    */
   async getKeys(): Promise<FolksonomyKey[]> {
-    const res = await this.raw.GET("/keys");
+    const res = await this.raw.GET( "/keys" );
     return res.response.json();
   }
 
   /**
    * Get the list of products that have a `key` or `key=value` if `value` is provided
    */
-  async getProducts(key: string, value?: string): Promise<FolksonomyTag[]> {
-    const res = await this.raw.GET("/products", {
+  async getProducts( key: string, value?: string ): Promise<FolksonomyTag[]> {
+    const res = await this.raw.GET( "/products", {
       params: { query: { k: key, v: value } },
-    });
+    } );
     return res.response.json();
   }
 
-  async putTag(tag: FolksonomyTag): Promise<boolean> {
-    const res = await this.raw.PUT("/product", { body: tag });
+  async putTag( tag: FolksonomyTag ): Promise<boolean> {
+    const res = await this.raw.PUT( "/product", { body: tag } );
 
     return res.response.status === 200;
   }
@@ -59,10 +59,10 @@ export class Folksonomy {
   /**
    * Get a list of existing tags for a product
    */
-  async getProduct(barcode: string) {
-    const res = await this.raw.GET("/product/{product}", {
+  async getProduct( barcode: string ) {
+    const res = await this.raw.GET( "/product/{product}", {
       params: { path: { product: barcode } },
-    });
+    } );
 
     return res;
   }
@@ -78,10 +78,10 @@ export class Folksonomy {
    *
    * @returns if the tag was added or updated
    */
-  async addTag(tag: FolksonomyTag): Promise<boolean> {
-    const res = await this.raw.POST("/product", {
+  async addTag( tag: FolksonomyTag ): Promise<boolean> {
+    const res = await this.raw.POST( "/product", {
       body: tag,
-    });
+    } );
 
     return res.response.status === 200;
   }
@@ -91,13 +91,13 @@ export class Folksonomy {
    *
    * @returns if the tag was deleted
    */
-  async removeTag(tag: FolksonomyTag & { version: number }) {
-    const res = await this.raw.DELETE("/product/{product}/{k}", {
+  async removeTag( tag: FolksonomyTag & { version: number; } ) {
+    const res = await this.raw.DELETE( "/product/{product}/{k}", {
       params: {
         path: { product: tag.product, k: tag.k },
         query: { version: tag.version },
       },
-    });
+    } );
 
     return res;
   }
@@ -113,16 +113,16 @@ export class Folksonomy {
     username: string,
     password: string
   ): Promise<
-    | { token: { access_token: string; token_type: string } }
-    | { error: ApiError }
+    | { token: { access_token: string; token_type: string; }; }
+    | { error: ApiError; }
   > {
-    const res = await this.raw.POST("/auth", {
+    const res = await this.raw.POST( "/auth", {
       body: { username, password },
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      bodySerializer: formBodySerializer,
-    });
+      bodySerializer: formBodySerializer as any,
+    } );
 
-    if (res.response.status !== 200) {
+    if ( res.response.status !== 200 ) {
       return {
         error: {
           detail: [
@@ -134,11 +134,11 @@ export class Folksonomy {
           ],
         },
       };
-    } else if (res.error != null) {
-      return { error: res.error };
+    } else if ( res.error != null ) {
+      return { error: res.error as any };
     }
 
-    const token = (await res.response.json()) as {
+    const token = ( await res.response.json() ) as {
       access_token: string;
       token_type: string;
     };

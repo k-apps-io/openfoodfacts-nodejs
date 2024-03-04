@@ -5,10 +5,6 @@
 
 
 export interface paths {
-  "/api/v1/status": {
-    /** Status Endpoint */
-    get: operations["status_endpoint_api_v1_status_get"];
-  };
   "/api/v1/auth": {
     /**
      * Authentication
@@ -33,42 +29,30 @@ export interface paths {
      * @description Return information about the current user session.
      */
     get: operations["get_user_session_api_v1_session_get"];
+    /**
+     * Delete User Session
+     * @description Delete the current user session.
+     *
+     * If the provided session token or cookie is invalid, a HTTP 401 response
+     * is returned.
+     */
+    delete: operations["delete_user_session_api_v1_session_delete"];
   };
   "/api/v1/users": {
     /** Get Users */
     get: operations["get_users_api_v1_users_get"];
   };
-  "/api/v1/prices": {
-    /** Get Price */
-    get: operations["get_price_api_v1_prices_get"];
-    /**
-     * Create Price
-     * @description Create a new price.
-     *
-     * This endpoint requires authentication.
-     */
-    post: operations["create_price_api_v1_prices_post"];
+  "/api/v1/locations": {
+    /** Get Locations */
+    get: operations["get_locations_api_v1_locations_get"];
   };
-  "/api/v1/proofs/upload": {
-    /**
-     * Upload Proof
-     * @description Upload a proof file.
-     *
-     * The POST request must be a multipart/form-data request with a file field
-     * named "file".
-     *
-     * This endpoint requires authentication.
-     */
-    post: operations["upload_proof_api_v1_proofs_upload_post"];
+  "/api/v1/locations/osm/{location_osm_type}/{location_osm_id}": {
+    /** Get Location By Osm */
+    get: operations["get_location_by_osm_api_v1_locations_osm__location_osm_type___location_osm_id__get"];
   };
-  "/api/v1/proofs": {
-    /**
-     * Get User Proofs
-     * @description Get all the proofs uploaded by the current user.
-     *
-     * This endpoint requires authentication.
-     */
-    get: operations["get_user_proofs_api_v1_proofs_get"];
+  "/api/v1/locations/{location_id}": {
+    /** Get Location By Id */
+    get: operations["get_location_by_id_api_v1_locations__location_id__get"];
   };
   "/api/v1/products": {
     /** Get Products */
@@ -82,17 +66,81 @@ export interface paths {
     /** Get Product By Id */
     get: operations["get_product_by_id_api_v1_products__product_id__get"];
   };
-  "/api/v1/locations": {
-    /** Get Locations */
-    get: operations["get_locations_api_v1_locations_get"];
+  "/api/v1/proofs": {
+    /**
+     * Get User Proofs
+     * @description Get all the proofs uploaded by the current user.
+     *
+     * This endpoint requires authentication.
+     */
+    get: operations["get_user_proofs_api_v1_proofs_get"];
   };
-  "/api/v1/locations/osm/{location_osm_type}/{location_osm_id}": {
-    /** Get Location By Osm */
-    get: operations["get_location_by_osm_api_v1_locations_osm__location_osm_type___location_osm_id__get"];
+  "/api/v1/proofs/upload": {
+    /**
+     * Upload Proof
+     * @description Upload a proof file.
+     *
+     * The POST request must be a multipart/form-data request with a file field
+     * named "file".
+     *
+     * This endpoint requires authentication.
+     */
+    post: operations["upload_proof_api_v1_proofs_upload_post"];
   };
-  "/api/v1/locations/{location_id}": {
-    /** Get Location By Id */
-    get: operations["get_location_by_id_api_v1_locations__location_id__get"];
+  "/api/v1/proofs/{proof_id}": {
+    /** Get User Proof By Id */
+    get: operations["get_user_proof_by_id_api_v1_proofs__proof_id__get"];
+    /**
+     * Delete Proof
+     * @description Delete a proof.
+     *
+     * This endpoint requires authentication.
+     * A user can delete only owned proofs.
+     * Can delete only proofs that are not associated with prices.
+     * A moderator can delete not owned proofs.
+     */
+    delete: operations["delete_proof_api_v1_proofs__proof_id__delete"];
+    /**
+     * Update Proof
+     * @description Update a proof.
+     *
+     * This endpoint requires authentication.
+     * A user can update only owned proofs.
+     */
+    patch: operations["update_proof_api_v1_proofs__proof_id__patch"];
+  };
+  "/api/v1/prices": {
+    /** Get Prices */
+    get: operations["get_prices_api_v1_prices_get"];
+    /**
+     * Create Price
+     * @description Create a new price.
+     *
+     * This endpoint requires authentication.
+     */
+    post: operations["create_price_api_v1_prices_post"];
+  };
+  "/api/v1/prices/{price_id}": {
+    /**
+     * Delete Price
+     * @description Delete a price.
+     *
+     * This endpoint requires authentication.
+     * A user can delete only owned prices.
+     */
+    delete: operations["delete_price_api_v1_prices__price_id__delete"];
+    /**
+     * Update Price
+     * @description Update a price.
+     *
+     * This endpoint requires authentication.
+     * A user can update only owned prices.
+     */
+    patch: operations["update_price_api_v1_prices__price_id__patch"];
+  };
+  "/api/v1/status": {
+    /** Status Endpoint */
+    get: operations["status_endpoint_api_v1_status_get"];
   };
 }
 
@@ -138,7 +186,7 @@ export interface components {
      * CurrencyEnum
      * @enum {string}
      */
-    CurrencyEnum: "BND" | "UGX" | "HTG" | "ITL" | "SVC" | "VUV" | "XBA" | "COU" | "GRD" | "LTT" | "ZRZ" | "MZM" | "KPW" | "DZD" | "BBD" | "LUC" | "MOP" | "LKR" | "GBP" | "PHP" | "TTD" | "RHD" | "ATS" | "IEP" | "DJF" | "ILP" | "AED" | "ARL" | "INR" | "GEK" | "ZWD" | "CUP" | "RSD" | "XRE" | "BRR" | "NIC" | "USD" | "ZMW" | "MKD" | "BAD" | "XAG" | "BRC" | "BGO" | "NGN" | "UGS" | "IQD" | "TMT" | "VEF" | "ARA" | "ZMK" | "GQE" | "MDL" | "AOR" | "XAU" | "HKD" | "BTN" | "SDD" | "UAK" | "QAR" | "CLP" | "TRY" | "GEL" | "OMR" | "ROL" | "XPT" | "SAR" | "YER" | "UYI" | "ARP" | "BYR" | "JPY" | "COP" | "KZT" | "MAF" | "KGS" | "TZS" | "PGK" | "TOP" | "LUL" | "XBD" | "MMK" | "MNT" | "CAD" | "RON" | "ISK" | "XPF" | "CVE" | "MRU" | "BRL" | "MUR" | "PEI" | "BOP" | "THB" | "BEF" | "SYP" | "LTL" | "MRO" | "MDC" | "AZM" | "XEU" | "SSP" | "YDD" | "UYW" | "EGP" | "FKP" | "MZE" | "ERN" | "PYG" | "XXX" | "SEK" | "SUR" | "XOF" | "LYD" | "HRD" | "SRG" | "PKR" | "SHP" | "CNH" | "GNS" | "BEL" | "SLL" | "CLF" | "BMD" | "BRN" | "NZD" | "MXP" | "GTQ" | "TJS" | "ILR" | "MGA" | "PTE" | "PES" | "ETB" | "BRZ" | "LRD" | "CSK" | "AFA" | "KRH" | "LVL" | "CSD" | "ISJ" | "LAK" | "PLN" | "VEB" | "LVR" | "XFO" | "ZWR" | "XPD" | "TPE" | "DKK" | "ZRN" | "AMD" | "GHS" | "EUR" | "NOK" | "ZWL" | "VNN" | "AON" | "RUB" | "TRL" | "VND" | "MYR" | "UYP" | "ZAR" | "MGF" | "SZL" | "BAN" | "CHF" | "WST" | "XDR" | "BAM" | "CNY" | "MVR" | "BRE" | "DOP" | "MZN" | "FIM" | "BRB" | "PEN" | "SKK" | "USS" | "CZK" | "SOS" | "TND" | "BOB" | "ESB" | "GNF" | "MCF" | "MLF" | "FJD" | "AUD" | "AOA" | "ADP" | "MTL" | "AWG" | "ALK" | "IDR" | "JOD" | "GIP" | "JMD" | "CHW" | "CLE" | "BYB" | "BOV" | "FRF" | "LSL" | "KES" | "SGD" | "KYD" | "CRC" | "GWP" | "XTS" | "BOL" | "AOK" | "RWF" | "SLE" | "SIT" | "VES" | "ZAL" | "CNX" | "XSU" | "GWE" | "GYD" | "BDT" | "MXN" | "XCD" | "GHC" | "TWD" | "XBC" | "CHE" | "YUR" | "BSD" | "DEM" | "BWP" | "MAD" | "RUR" | "HRK" | "STN" | "BUK" | "MWK" | "NLG" | "PLZ" | "UYU" | "SBD" | "EEK" | "DDM" | "MKN" | "MVP" | "HUF" | "MXV" | "KRW" | "ILS" | "ARM" | "YUM" | "ANG" | "SRD" | "CUC" | "AFN" | "NIO" | "IRR" | "KHR" | "VED" | "ECV" | "SDG" | "TMM" | "MTP" | "NAD" | "TJR" | "XBB" | "STD" | "XFU" | "ALL" | "YUN" | "BYN" | "CDF" | "XAF" | "BGM" | "BHD" | "SDP" | "AZN" | "BEC" | "NPR" | "KMF" | "KWD" | "GMD" | "BGN" | "KRO" | "LBP" | "LUF" | "UZS" | "SCR" | "YUD" | "UAH" | "ESP" | "ECS" | "ESA" | "BGL" | "ARS" | "CYP" | "XUA" | "BIF" | "PAB" | "BZD" | "USN" | "HNL";
+    CurrencyEnum: "MCF" | "MXV" | "XBC" | "RWF" | "CLF" | "LVL" | "BHD" | "CLP" | "XEU" | "SVC" | "QAR" | "CNY" | "ESB" | "CAD" | "BRL" | "BWP" | "KGS" | "MZE" | "HNL" | "AMD" | "ILP" | "RON" | "STD" | "ETB" | "ZWR" | "TJS" | "BRE" | "IDR" | "ARL" | "BOB" | "XAF" | "ECV" | "THB" | "ILR" | "KPW" | "AOA" | "BIF" | "COU" | "CLE" | "ROL" | "MRU" | "XRE" | "GWP" | "PES" | "AUD" | "BSD" | "MOP" | "DJF" | "CSD" | "LRD" | "AWG" | "ZAL" | "XBD" | "VEB" | "OMR" | "ZMW" | "ECS" | "VND" | "JOD" | "EGP" | "TPE" | "DDM" | "BOV" | "YUD" | "PYG" | "GMD" | "BND" | "MZM" | "MTL" | "SGD" | "XXX" | "MVP" | "JMD" | "GBP" | "CUP" | "SYP" | "PKR" | "AZM" | "LTL" | "BOP" | "DOP" | "XPF" | "LUC" | "FRF" | "BGO" | "GQE" | "RSD" | "NPR" | "KHR" | "GTQ" | "LAK" | "LYD" | "PHP" | "LVR" | "AFN" | "SLE" | "XAU" | "BGL" | "VED" | "KZT" | "BMD" | "NGN" | "BAM" | "GHC" | "MKD" | "RHD" | "XSU" | "SHP" | "UAK" | "RUR" | "SDD" | "PEI" | "NLG" | "PLN" | "PAB" | "HTG" | "ESA" | "CHW" | "AON" | "BTN" | "HRD" | "ZWD" | "ZAR" | "BRZ" | "KES" | "VES" | "UZS" | "CZK" | "SUR" | "BGM" | "HRK" | "EUR" | "MWK" | "ARA" | "XPT" | "SCR" | "MDC" | "BRN" | "ANG" | "NAD" | "MGA" | "USS" | "KWD" | "BYR" | "XUA" | "DKK" | "JPY" | "SKK" | "CRC" | "TZS" | "XPD" | "BUK" | "BYB" | "IQD" | "ESP" | "ADP" | "GRD" | "MAF" | "XFU" | "ZRZ" | "LKR" | "ZRN" | "BRR" | "MYR" | "FJD" | "MNT" | "LUL" | "FIM" | "CSK" | "ISJ" | "UYU" | "YDD" | "GEK" | "RUB" | "CDF" | "XBB" | "MVR" | "SRD" | "ARM" | "VNN" | "BAN" | "CHF" | "INR" | "GNF" | "CNX" | "WST" | "ITL" | "NIO" | "XCD" | "ARS" | "TND" | "MDL" | "BEC" | "SOS" | "AZN" | "TMT" | "TRY" | "MKN" | "GHS" | "UAH" | "ALL" | "KRH" | "UGS" | "NIC" | "LUF" | "SSP" | "AOR" | "MAD" | "KYD" | "XOF" | "YUR" | "LBP" | "GEL" | "BOL" | "GIP" | "YUN" | "HUF" | "TOP" | "YUM" | "NZD" | "IEP" | "GNS" | "SAR" | "ZMK" | "SIT" | "MZN" | "CNH" | "MXN" | "TMM" | "VEF" | "MTP" | "COP" | "CYP" | "SZL" | "TJR" | "MLF" | "TTD" | "ARP" | "GYD" | "NOK" | "ISK" | "IRR" | "LSL" | "DEM" | "BEF" | "BAD" | "AOK" | "BBD" | "BRC" | "HKD" | "MUR" | "SDP" | "XTS" | "KRW" | "SEK" | "BGN" | "EEK" | "AED" | "TRL" | "KMF" | "TWD" | "ZWL" | "USD" | "XAG" | "BRB" | "BDT" | "CUC" | "XFO" | "ALK" | "UYW" | "VUV" | "BEL" | "ERN" | "KRO" | "MGF" | "SBD" | "PGK" | "SLL" | "SRG" | "ILS" | "UYP" | "FKP" | "PEN" | "SDG" | "XBA" | "YER" | "GWE" | "AFA" | "XDR" | "PLZ" | "BZD" | "CHE" | "STN" | "LTT" | "ATS" | "DZD" | "UYI" | "PTE" | "MRO" | "BYN" | "CVE" | "USN" | "UGX" | "MMK" | "MXP";
     /**
      * Flavor
      * @description Flavor is used to refer to a specific Open*Facts project:
@@ -260,6 +308,19 @@ export interface components {
       size: number | null;
       /** Pages */
       pages?: number | null;
+    };
+    /** PriceBasicUpdatableFields */
+    PriceBasicUpdatableFields: {
+      /** Price */
+      price?: number | null;
+      /** Price Is Discounted */
+      price_is_discounted?: boolean | null;
+      /** Price Without Discount */
+      price_without_discount?: number | null;
+      price_per?: components["schemas"]["PricePerEnum"] | null;
+      currency?: components["schemas"]["CurrencyEnum"] | null;
+      /** Date */
+      date?: string | null;
     };
     /**
      * PriceCreateWithValidation
@@ -461,6 +522,8 @@ export interface components {
        * @description ID of the proof, if any. The proof is a file (receipt or price tag image) uploaded by the user to prove the price of the product. The proof must be uploaded before the price, and the authenticated user must be the owner of the proof.
        */
       proof_id?: number | null;
+      /** Id */
+      id: number;
       /** Product Id */
       product_id: number | null;
       /** Location Id */
@@ -569,6 +632,8 @@ export interface components {
        * @description ID of the proof, if any. The proof is a file (receipt or price tag image) uploaded by the user to prove the price of the product. The proof must be uploaded before the price, and the authenticated user must be the owner of the proof.
        */
       proof_id?: number | null;
+      /** Id */
+      id: number;
       /** Product Id */
       product_id: number | null;
       /** Location Id */
@@ -609,14 +674,34 @@ export interface components {
       product_name: string | null;
       /**
        * Product Quantity
-       * @description quantity of the product, normalized in g or mL (depending on the product).
+       * @description quantity of the product, normalized in g or ml (depending on the product).
        */
       product_quantity: number | null;
+      /**
+       * Product Quantity Unit
+       * @description quantity unit of the product: g or ml (depending on the product).
+       */
+      product_quantity_unit: string | null;
+      /**
+       * Categories Tags
+       * @description categories of the product.
+       */
+      categories_tags: string[];
       /**
        * Brands
        * @description brand(s) of the product.
        */
       brands: string | null;
+      /**
+       * Brands Tags
+       * @description brands of the product.
+       */
+      brands_tags: string[];
+      /**
+       * Labels Tags
+       * @description labels of the product.
+       */
+      labels_tags: string[];
       /**
        * Image Url
        * @description URL of the product image.
@@ -646,6 +731,12 @@ export interface components {
        */
       updated: string | null;
     };
+    /** ProofBasicUpdatableFields */
+    ProofBasicUpdatableFields: {
+      type?: components["schemas"]["ProofTypeEnum"] | null;
+      /** Is Public */
+      is_public?: boolean | null;
+    };
     /** ProofFull */
     ProofFull: {
       /** Id */
@@ -663,6 +754,12 @@ export interface components {
        * @default true
        */
       is_public?: boolean;
+      /**
+       * Price Count
+       * @description number of prices for this proof.
+       * @default 0
+       */
+      price_count?: number;
       /**
        * Created
        * Format: date-time
@@ -719,17 +816,6 @@ export type external = Record<string, never>;
 
 export interface operations {
 
-  /** Status Endpoint */
-  status_endpoint_api_v1_status_get: {
-    responses: {
-      /** @description Successful Response */
-      200: {
-        content: {
-          "application/json": unknown;
-        };
-      };
-    };
-  };
   /**
    * Authentication
    * @description Authentication: provide username/password and get a bearer token in return.
@@ -786,6 +872,23 @@ export interface operations {
       };
     };
   };
+  /**
+   * Delete User Session
+   * @description Delete the current user session.
+   *
+   * If the provided session token or cookie is invalid, a HTTP 401 response
+   * is returned.
+   */
+  delete_user_session_api_v1_session_delete: {
+    responses: {
+      /** @description Successful Response */
+      200: {
+        content: {
+          "application/json": unknown;
+        };
+      };
+    };
+  };
   /** Get Users */
   get_users_api_v1_users_get: {
     parameters: {
@@ -815,34 +918,15 @@ export interface operations {
       };
     };
   };
-  /** Get Price */
-  get_price_api_v1_prices_get: {
+  /** Get Locations */
+  get_locations_api_v1_locations_get: {
     parameters: {
       query?: {
-        product_code?: string | null;
-        product_id?: number | null;
-        product_id__isnull?: boolean | null;
-        category_tag?: string | null;
-        labels_tags__like?: string | null;
-        origins_tags__like?: string | null;
-        location_osm_id?: number | null;
-        location_osm_type?: components["schemas"]["LocationOSMEnum"] | null;
-        location_id?: number | null;
-        price?: number | null;
-        price_is_discounted?: boolean | null;
-        price__gt?: number | null;
-        price__gte?: number | null;
-        price__lt?: number | null;
-        price__lte?: number | null;
-        currency?: string | null;
-        date?: string | null;
-        date__gt?: string | null;
-        date__gte?: string | null;
-        date__lt?: string | null;
-        date__lte?: string | null;
-        owner?: string | null;
-        created__gte?: string | null;
-        created__lte?: string | null;
+        osm_name__like?: string | null;
+        osm_address_country__like?: string | null;
+        price_count?: number | null;
+        price_count__gte?: number | null;
+        price_count__lte?: number | null;
         order_by?: string | null;
         /** @description Page number */
         page?: number;
@@ -854,7 +938,7 @@ export interface operations {
       /** @description Successful Response */
       200: {
         content: {
-          "application/json": components["schemas"]["Page_PriceFullWithRelations_"];
+          "application/json": components["schemas"]["Page_LocationFull_"];
         };
       };
       /** @description Validation Error */
@@ -865,86 +949,41 @@ export interface operations {
       };
     };
   };
-  /**
-   * Create Price
-   * @description Create a new price.
-   *
-   * This endpoint requires authentication.
-   */
-  create_price_api_v1_prices_post: {
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["PriceCreateWithValidation"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      201: {
-        content: {
-          "application/json": components["schemas"]["PriceFull"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  /**
-   * Upload Proof
-   * @description Upload a proof file.
-   *
-   * The POST request must be a multipart/form-data request with a file field
-   * named "file".
-   *
-   * This endpoint requires authentication.
-   */
-  upload_proof_api_v1_proofs_upload_post: {
-    requestBody: {
-      content: {
-        "multipart/form-data": components["schemas"]["Body_upload_proof_api_v1_proofs_upload_post"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      201: {
-        content: {
-          "application/json": components["schemas"]["ProofFull"];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  /**
-   * Get User Proofs
-   * @description Get all the proofs uploaded by the current user.
-   *
-   * This endpoint requires authentication.
-   */
-  get_user_proofs_api_v1_proofs_get: {
+  /** Get Location By Osm */
+  get_location_by_osm_api_v1_locations_osm__location_osm_type___location_osm_id__get: {
     parameters: {
-      query?: {
-        owner?: string | null;
-        type?: components["schemas"]["ProofTypeEnum"] | null;
-        order_by?: string | null;
-        /** @description Page number */
-        page?: number;
-        /** @description Page size */
-        size?: number;
+      path: {
+        location_osm_type: string;
+        location_osm_id: number;
       };
     };
     responses: {
       /** @description Successful Response */
       200: {
         content: {
-          "application/json": components["schemas"]["Page_ProofFull_"];
+          "application/json": components["schemas"]["LocationFull"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  /** Get Location By Id */
+  get_location_by_id_api_v1_locations__location_id__get: {
+    parameters: {
+      path: {
+        location_id: number;
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        content: {
+          "application/json": components["schemas"]["LocationFull"];
         };
       };
       /** @description Validation Error */
@@ -1033,12 +1072,17 @@ export interface operations {
       };
     };
   };
-  /** Get Locations */
-  get_locations_api_v1_locations_get: {
+  /**
+   * Get User Proofs
+   * @description Get all the proofs uploaded by the current user.
+   *
+   * This endpoint requires authentication.
+   */
+  get_user_proofs_api_v1_proofs_get: {
     parameters: {
       query?: {
-        osm_name__like?: string | null;
-        osm_address_country__like?: string | null;
+        owner?: string | null;
+        type?: components["schemas"]["ProofTypeEnum"] | null;
         price_count?: number | null;
         price_count__gte?: number | null;
         price_count__lte?: number | null;
@@ -1053,7 +1097,7 @@ export interface operations {
       /** @description Successful Response */
       200: {
         content: {
-          "application/json": components["schemas"]["Page_LocationFull_"];
+          "application/json": components["schemas"]["Page_ProofFull_"];
         };
       };
       /** @description Validation Error */
@@ -1064,19 +1108,26 @@ export interface operations {
       };
     };
   };
-  /** Get Location By Osm */
-  get_location_by_osm_api_v1_locations_osm__location_osm_type___location_osm_id__get: {
-    parameters: {
-      path: {
-        location_osm_type: string;
-        location_osm_id: number;
+  /**
+   * Upload Proof
+   * @description Upload a proof file.
+   *
+   * The POST request must be a multipart/form-data request with a file field
+   * named "file".
+   *
+   * This endpoint requires authentication.
+   */
+  upload_proof_api_v1_proofs_upload_post: {
+    requestBody: {
+      content: {
+        "multipart/form-data": components["schemas"]["Body_upload_proof_api_v1_proofs_upload_post"];
       };
     };
     responses: {
       /** @description Successful Response */
-      200: {
+      201: {
         content: {
-          "application/json": components["schemas"]["LocationFull"];
+          "application/json": components["schemas"]["ProofFull"];
         };
       };
       /** @description Validation Error */
@@ -1087,24 +1138,231 @@ export interface operations {
       };
     };
   };
-  /** Get Location By Id */
-  get_location_by_id_api_v1_locations__location_id__get: {
+  /** Get User Proof By Id */
+  get_user_proof_by_id_api_v1_proofs__proof_id__get: {
     parameters: {
       path: {
-        location_id: number;
+        proof_id: number;
       };
     };
     responses: {
       /** @description Successful Response */
       200: {
         content: {
-          "application/json": components["schemas"]["LocationFull"];
+          "application/json": components["schemas"]["ProofFull"];
         };
       };
       /** @description Validation Error */
       422: {
         content: {
           "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  /**
+   * Delete Proof
+   * @description Delete a proof.
+   *
+   * This endpoint requires authentication.
+   * A user can delete only owned proofs.
+   * Can delete only proofs that are not associated with prices.
+   * A moderator can delete not owned proofs.
+   */
+  delete_proof_api_v1_proofs__proof_id__delete: {
+    parameters: {
+      path: {
+        proof_id: number;
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      204: {
+        content: never;
+      };
+      /** @description Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  /**
+   * Update Proof
+   * @description Update a proof.
+   *
+   * This endpoint requires authentication.
+   * A user can update only owned proofs.
+   */
+  update_proof_api_v1_proofs__proof_id__patch: {
+    parameters: {
+      path: {
+        proof_id: number;
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ProofBasicUpdatableFields"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        content: {
+          "application/json": components["schemas"]["ProofFull"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  /** Get Prices */
+  get_prices_api_v1_prices_get: {
+    parameters: {
+      query?: {
+        product_code?: string | null;
+        product_id?: number | null;
+        product_id__isnull?: boolean | null;
+        category_tag?: string | null;
+        location_osm_id?: number | null;
+        location_osm_type?: components["schemas"]["LocationOSMEnum"] | null;
+        location_id?: number | null;
+        price?: number | null;
+        price_is_discounted?: boolean | null;
+        price__gt?: number | null;
+        price__gte?: number | null;
+        price__lt?: number | null;
+        price__lte?: number | null;
+        currency?: string | null;
+        date?: string | null;
+        date__gt?: string | null;
+        date__gte?: string | null;
+        date__lt?: string | null;
+        date__lte?: string | null;
+        proof_id?: number | null;
+        owner?: string | null;
+        created__gte?: string | null;
+        created__lte?: string | null;
+        order_by?: string | null;
+        /** @description Page number */
+        page?: number;
+        /** @description Page size */
+        size?: number;
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        content: {
+          "application/json": components["schemas"]["Page_PriceFullWithRelations_"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  /**
+   * Create Price
+   * @description Create a new price.
+   *
+   * This endpoint requires authentication.
+   */
+  create_price_api_v1_prices_post: {
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["PriceCreateWithValidation"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      201: {
+        content: {
+          "application/json": components["schemas"]["PriceFull"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  /**
+   * Delete Price
+   * @description Delete a price.
+   *
+   * This endpoint requires authentication.
+   * A user can delete only owned prices.
+   */
+  delete_price_api_v1_prices__price_id__delete: {
+    parameters: {
+      path: {
+        price_id: number;
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      204: {
+        content: never;
+      };
+      /** @description Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  /**
+   * Update Price
+   * @description Update a price.
+   *
+   * This endpoint requires authentication.
+   * A user can update only owned prices.
+   */
+  update_price_api_v1_prices__price_id__patch: {
+    parameters: {
+      path: {
+        price_id: number;
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["PriceBasicUpdatableFields"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        content: {
+          "application/json": components["schemas"]["PriceFull"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  /** Status Endpoint */
+  status_endpoint_api_v1_status_get: {
+    responses: {
+      /** @description Successful Response */
+      200: {
+        content: {
+          "application/json": unknown;
         };
       };
     };

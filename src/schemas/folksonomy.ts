@@ -130,7 +130,7 @@ export interface components {
     /** Body_authentication_auth_post */
     Body_authentication_auth_post: {
       /** Grant Type */
-      grant_type?: string;
+      grant_type?: string | null;
       /** Username */
       username: string;
       /** Password */
@@ -141,9 +141,9 @@ export interface components {
        */
       scope?: string;
       /** Client Id */
-      client_id?: string;
+      client_id?: string | null;
       /** Client Secret */
-      client_secret?: string;
+      client_secret?: string | null;
     };
     /** HTTPValidationError */
     HTTPValidationError: {
@@ -192,22 +192,19 @@ export interface components {
        */
       version?: number;
       /** Editor */
-      editor?: string;
-      /**
-       * Last Edit
-       * Format: date-time
-       */
-      last_edit?: string;
+      editor?: string | null;
+      /** Last Edit */
+      last_edit?: string | null;
       /**
        * Comment
        * @default
        */
-      comment?: string;
+      comment?: string | null;
     };
     /** ValidationError */
     ValidationError: {
       /** Location */
-      loc: string[];
+      loc: (string | number)[];
       /** Message */
       msg: string;
       /** Error Type */
@@ -279,7 +276,7 @@ export interface operations {
   authentication_auth_by_cookie_post: {
     parameters: {
       cookie?: {
-        session?: string;
+        session?: string | null;
       };
     };
     responses: {

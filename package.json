@@ -1,5 +1,5 @@
 {
-  "name": "openfoodfacts-nodejs",
+  "name": "@k-apps-io/openfoodfacts-nodejs",
   "version": "2.0.0",
   "description": "Open Food Facts API NodeJS Wrapper",
   "exports": [
@@ -59,8 +59,6 @@
     "@types/mocha": "^10.0.6",
     "@types/mockery": "^1.4.33",
     "@types/node-fetch": "^2.6.9",
-    "@typescript-eslint/eslint-plugin": "^7.0.0",
-    "@typescript-eslint/parser": "^6.13.2",
     "all-contributors-cli": "^6.26.1",
     "chai": "^4.3.10",
     "eslint": "^8.55.0",
